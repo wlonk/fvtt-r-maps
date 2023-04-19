@@ -1,0 +1,29 @@
+{
+  "id": "fvtt-r-maps",
+  "title": "R-Maps",
+  "description": "Make r-maps for your game!",
+  "authors": [
+    {
+      "name": "Kit",
+      "discord": "wlonk#6479"
+    }
+  ],
+  "version": "0.1.0",
+  "compatibility": {
+    "minimum": "10",
+    "verified": "10"
+  },
+  "type": "module",
+  "scripts": [
+      "scripts/r-maps.js"
+  ],
+  "styles": [
+      "styles/r-maps.scss"
+  ],
+  "url": "https://github.com/wlonk/fvtt-r-maps",
+  "manifest": "https://github.com/wlonk/fvtt-r-maps",
+  "download": "https://github.com/wlonk/fvtt-r-maps",
+  "readme": "https://github.com/wlonk/fvtt-r-maps",
+  "changelog": "https://github.com/wlonk/fvtt-r-maps",
+  "bugs": "https://github.com/wlonk/fvtt-r-maps"
+}
