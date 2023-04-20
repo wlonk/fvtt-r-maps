@@ -21,8 +21,67 @@ class RMaps {
   static TEMPLATES = {
     EDGE: `modules/${this.ID}/templates/r-map-edge.hbs`,
   }
+
+  static state = {
+    controlActive: false,
+  }
+
+  static onGetSceneControlButtons(buttons) {
+    const rMapsToolController = {
+      name: this.ID,
+      title: "R-Maps",
+      activeTool: "",
+      visible: true,
+      tools: [
+        {
+          name: "Draw edge",
+          title: "Draw a connection between two entities on the r-map",
+          icon: "fas fa-diagram-project",
+          toggle: true,
+          active: RMaps.state.controlActive,
+          onClick: (toggle) => {
+            console.log("I am click't");
+            RMaps.state.controlActive = toggle;
+          },
+        },
+      ],
+      icon: "fas fa-chart-network",
+      layer: this.ID,
+    };
+    buttons.push(rMapsToolController);
+  }
 }
 
+class RMapToolsLayer extends InteractionLayer {
+	constructor() {
+		super();
+		console.log("R-Maps | Loaded into canvas");
+	}
+
+	activate() {
+		super.activate();
+		console.log("R-Maps | Activated");
+		return this;
+	}
+
+	deactivate() {
+		super.deactivate();
+		console.log("R-Maps | Deactivated");
+		return this;
+	}
+
+	async draw() {
+		await super.draw();
+		console.log("R-Maps | Drawing");
+		return this;
+	}
+
+	async tearDown() {
+		await super.tearDown();
+		console.log("R-Maps | Tearing down!");
+		return this;
+	}
+}
 
 class RMapEdgeData {
   static get allEdges() {
@@ -84,7 +143,7 @@ class RMapEdgeData {
     return canvas?.scene.tiles.get(relevantEdge.fromId)?.setFlag(RMaps.ID, RMaps.FLAGS.EDGES, keyDeletion);
   }
 
-  static drawEdge(edgeId) {
+  static async drawEdge(edgeId) {
     const relevantEdge = this.allEdges[edgeId];
     const fromNode = canvas?.scene.tiles.get(relevantEdge.fromId);
     const toNode = canvas?.scene.tiles.get(relevantEdge.to);
@@ -109,21 +168,36 @@ class RMapEdgeData {
           0, 0,
           toCentroid.x - fromCentroid.x, toCentroid.y - fromCentroid.y,
         ],
-        // TODO: calculate this right:
-        height: 100,
-        width: 100,
+        height: toCentroid.y - fromCentroid.y,
+        width: toCentroid.x - fromCentroid.x,
       },
       // TODO: colour and style
     };
 
-    // TODO: store this on the edge data, so we can erase and redraw on updates.
-    return canvas.scene.createEmbeddedDocuments('Drawing', [edge]);
+    const [ drawing ] = await canvas.scene.createEmbeddedDocuments('Drawing', [edge]);
+    this.updateEdge(edgeId, { drawing: drawing._id });
+    return drawing;
   }
 }
 
-// TODO: support adding intermediate control points and getting bezier-y?
-// TODO: put edges behind tiles, for visual cleanliness.
-// TODO: hook redraw triggers up to update events.
+/* */
+Hooks.once("setup", () => {
+  canvas.layers[RMaps.ID] = {
+    group: "interface",
+    layerClass: RMapToolsLayer,
+  };
+});
+
+Hooks.on("getSceneControlButtons", (buttons) => {
+  // TODO: maybe we just splice into the Tile menu?
+	RMaps.onGetSceneControlButtons(buttons);
+});
+/* */
+
 // TODO: add drag-to-draw functionality
+// TODO: hook redraw triggers up to update events.
+//
+// TODO: put edges behind tiles, for visual cleanliness.
 // TODO: add labels on edges
+// TODO: support adding intermediate control points and getting bezier-y?
 // TODO: add endcap arrows
