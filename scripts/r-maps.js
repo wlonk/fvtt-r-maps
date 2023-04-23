@@ -177,24 +177,60 @@ class RMapEdgeData {
     const fromNode = canvas?.scene.tokens.get(relevantEdge.fromId)._object.center;
     const toNode = canvas?.scene.tokens.get(relevantEdge.to)._object.center;
 
+    // This is the most BRUTE FORCE way I could see to guarantee that the
+    // bounding box and corners and lines all match up correctly. It works. It
+    // could be improved.
+    //
+    // Calculate corners:
+    const UL = { x: 0, y: 0 };
+    const UR = { x: Math.abs(fromNode.x - toNode.x), y: 0 }
+    const LL = { x: 0, y: Math.abs(fromNode.y - toNode.y) }
+    const LR = { x: Math.abs(fromNode.x - toNode.x), y: Math.abs(fromNode.y - toNode.y) }
+
+    // Find the corner we're starting in. We are therefore moving to the
+    // opposite corner.
+    let origin, destination;
+    if (
+      // UL:
+      fromNode.x == Math.min(fromNode.x, toNode.x)
+      && fromNode.y == Math.min(fromNode.y, toNode.y)
+    ) {
+      origin = UL;
+      destination = LR;
+    } else if (
+      // UR:
+      fromNode.x == Math.max(fromNode.x, toNode.x)
+      && fromNode.y == Math.min(fromNode.y, toNode.y)
+    ) {
+      origin = UR
+      destination = LL;
+    } else if (
+      // LL:
+      fromNode.x == Math.min(fromNode.x, toNode.x)
+      && fromNode.y == Math.max(fromNode.y, toNode.y)
+    ) {
+      origin = LL;
+      destination = UR;
+    } else if (
+      // LR:
+      fromNode.x == Math.max(fromNode.x, toNode.x)
+      && fromNode.y == Math.max(fromNode.y, toNode.y)
+    ) {
+      origin = LR;
+      destination = UL;
+    }
+
+    // Now just prep the Drawing object:
     const edge = {
-      // TODO: the bounding box starts at fromNode.center always, and unless
-      // the line is going UL to LR, this is not right.
-      x: fromNode.x,
-      y: fromNode.y,
+      x: Math.min(fromNode.x, toNode.x),
+      y: Math.min(fromNode.y, toNode.y),
       shape: {
-        // TODO: bounding box is [x, y, x + width, y + height]. Define this
-        // first, then define points, below, and you can get everything to
-        // work. This means the two centers will define ANY two of the four
-        // corners, and the line will have to start at either one, and move to
-        // the other.
         width: Math.abs(toNode.x - fromNode.x),
         height: Math.abs(toNode.y - fromNode.y),
         type: foundry.data.ShapeData.TYPES.POLYGON,
         points: [
-          // TODO: if the line doesn't go from UL to LR, this shouldn't start at 0,0
-          0, 0,
-          toNode.x - fromNode.x, toNode.y - fromNode.y,
+          origin.x, origin.y,
+          destination.x, destination.y,
         ],
       },
       // TODO: colour and style
