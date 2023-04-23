@@ -13,6 +13,18 @@
     "minimum": "10",
     "verified": "10"
   },
+  "relationships": {
+    "requires": [
+      {
+        "id": "lib-wrapper",
+        "type": "module",
+        "compatibility": {
+          "minimum": "1.0.0.0",
+          "verified": "1.12.12.0"
+        }
+      }
+    ]
+  },
   "type": "module",
   "scripts": [
       "scripts/r-maps.js"
