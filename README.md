@@ -12,7 +12,7 @@ update as you move the tokens around.
    console, but it all seems to be working anyway. Not a comforting situation.
    See https://foundryvtt.wiki/en/development/guides/permissions
  - [ ] TODO: write unit tests. [Quench](https://github.com/Ethaks/FVTT-Quench)?
- - [ ] These might be handled by Advanced Drawing Tools:
+ - These might be handled by Advanced Drawing Tools:
    - [ ] TODO: add labels on edges.
    - [ ] TODO: colour and style.
    - [ ] TODO: support adding intermediate control points and getting bezier-y?

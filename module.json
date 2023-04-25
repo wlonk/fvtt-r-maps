@@ -29,9 +29,6 @@
   "esmodules": [
       "src/index.js"
   ],
-  "styles": [
-      "styles/r-maps.scss"
-  ],
   "url": "https://github.com/wlonk/fvtt-r-maps",
   "download": "https://github.com/wlonk/fvtt-r-maps",
   "readme": "https://github.com/wlonk/fvtt-r-maps",
