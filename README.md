@@ -8,15 +8,17 @@ update as you move the tokens around.
 
 ## TODO
 
- - [ ] TODO: permissions stuff is weird? Users are having perms errors in the
+ - [ ] permissions stuff is weird? Users are having perms errors in the
    console, but it all seems to be working anyway. Not a comforting situation.
    See https://foundryvtt.wiki/en/development/guides/permissions
- - [ ] TODO: write unit tests. [Quench](https://github.com/Ethaks/FVTT-Quench)?
+ - [ ] write unit tests. [Quench](https://github.com/Ethaks/FVTT-Quench)?
+ - [ ] add CI.
+ - [ ] add git-tag based CD release process.
  - These might be handled by Advanced Drawing Tools:
-   - [ ] TODO: add labels on edges.
-   - [ ] TODO: colour and style.
-   - [ ] TODO: support adding intermediate control points and getting bezier-y?
-   - [ ] TODO: add endcap arrows.
+   - [ ] add labels on edges.
+   - [ ] colour and style.
+   - [ ] support adding intermediate control points and getting bezier-y?
+   - [ ] add endcap arrows.
 
 ## Mods to synergize with
 
