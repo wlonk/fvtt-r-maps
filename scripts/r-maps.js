@@ -294,6 +294,9 @@ Hooks.on('libWrapper.Ready', () => {
   libWrapper.unregister_all(RMaps.ID);
 
   // TODO: this currently won't fire if you start inside a token?
+  // This implies a strange but usable UI: select a token, then click and drag
+  // somewhere on the background, then drag to your token of destination, then
+  // release.
   libWrapper.register(RMaps.ID, 'TokenLayer.prototype._onDragLeftStart', (wrapped, event) => {
     wrapped(event);
     if (
@@ -366,14 +369,3 @@ Hooks.on('libWrapper.Ready', () => {
     wrapped(event, ...args);
   }, 'WRAPPER');
 });
-
-// ============== todo.md
-// These might be handled by Advanced Drawing Tools:
-//     TODO: add labels on edges
-//     TODO: colour and style
-//     TODO: support adding intermediate control points and getting bezier-y?
-//     TODO: add endcap arrows
-//
-// TODO: permissions stuff is weird?
-// TODO: break this into modular JS
-// TODO: write unit tests. Quench?
