@@ -83,13 +83,13 @@ class RMapEdgeData {
   }
 
   static updateEdge(edgeId, updateData) {
-    /* * /
+    log('beginning updateEdge');
     const relevantEdge = this.allEdges[edgeId];
     const update = {
       [edgeId]: updateData
     };
+    log('updateEdge with', update);
     return canvas?.scene.tokens.get(relevantEdge.fromId)?.setFlag(RMaps.ID, RMaps.FLAGS.EDGES, update);
-    /* */
   }
 
   static deleteEdge(edgeId) {
@@ -105,7 +105,8 @@ class RMapEdgeData {
 
   // This pertains to Drawings:
   static async updateEdgeDrawingsForToken(tokenId) {
-    /* Temporarily commented out. * /
+    /* Temporarily commented out. */
+    log('beginning updateEdgeDrawingsForToken');
     // Inbound edges:
     const inbound = Object.values(this.allEdges).filter(
       (edge) => edge.to === tokenId
@@ -138,6 +139,7 @@ class RMapEdgeData {
         ...newEdge,
       };
     });
+    log('updateEdgeDrawingsForToken with', inbound, outbound);
     const updates = await canvas.scene.updateEmbeddedDocuments('Drawing', [...inbound, ...outbound])
     return updates;
     /* */
@@ -145,7 +147,8 @@ class RMapEdgeData {
 
   // This pertains to Drawings:
   static async drawEdge(edgeId) {
-    /* Temporarily commented out. * /
+    /* Temporarily commented out. */
+    log('beginning drawEdge')
     const relevantEdge = this.allEdges[edgeId];
     const fromNode = canvas?.scene.tokens.get(relevantEdge.fromId)._object.center;
     const toNode = canvas?.scene.tokens.get(relevantEdge.to)._object.center;
@@ -153,11 +156,23 @@ class RMapEdgeData {
     const edge = getEdgeGivenTwoNodes(fromNode, toNode);
     edge.shape.type = foundry.data.ShapeData.TYPES.POLYGON;
 
+    log('drawEdge with', edge);
     const [ drawing ] = await canvas.scene.createEmbeddedDocuments('Drawing', [edge]);
     this.updateEdge(edgeId, { drawingId: drawing._id });
     return drawing;
     /* */
   }
+}
+
+// debug-log-utils.js
+function log(...args) {
+  try {
+    const isDebugging = game.modules.get('_dev-mode')?.api?.getPackageDebugValue(RMaps.ID);
+
+    if (isDebugging) {
+      console.log(RMaps.ID, '|', ...args);
+    }
+  } catch (e) {}
 }
 
 // ============== canvas-utils.js
@@ -270,6 +285,10 @@ Hooks.on('getSceneControlButtons', (buttons) => {
 	RMaps.onGetSceneControlButtons(buttons);
 });
 
+Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
+  registerPackageDebugFlag(RMaps.ID);
+});
+
 Hooks.on('libWrapper.Ready', () => {
   // Reset all the wrappers for this module:
   libWrapper.unregister_all(RMaps.ID);
@@ -325,7 +344,6 @@ Hooks.on('libWrapper.Ready', () => {
     }
   }, 'WRAPPER');
 
-  // TODO: somehow this is triggering something else that's drawing the edges?
   libWrapper.register(RMaps.ID, 'Token.prototype._onUpdate', (wrapped, event, ...args) => {
     wrapped(event, ...args);
     const keys = Object.keys(foundry.utils.flattenObject(event));
@@ -338,17 +356,23 @@ Hooks.on('libWrapper.Ready', () => {
     }
   }, 'WRAPPER');
 
-  // TODO: if drawing edge is deleted, remove edge from edge DB flags
+  libWrapper.register(RMaps.ID, 'Drawing.prototype._onDelete', function (wrapped, event, ...args) {
+    Object.keys(RMapEdgeData.allEdges).forEach((edgeKey) => {
+      const edge = RMapEdgeData.allEdges[edgeKey];
+      if (edge.drawingId === this.id) {
+        RMapEdgeData.deleteEdge(edgeKey);
+      }
+    });
+    wrapped(event, ...args);
+  }, 'WRAPPER');
 });
 
 // ============== todo.md
 // These might be handled by Advanced Drawing Tools:
 //     TODO: add labels on edges
 //     TODO: colour and style
-// TODO: support adding intermediate control points and getting bezier-y?
-//          Maybe this is done with the Advanced Drawing Tools mod?
-// TODO: add endcap arrows
-//          Maybe this is done with the Advanced Drawing Tools mod?
+//     TODO: support adding intermediate control points and getting bezier-y?
+//     TODO: add endcap arrows
 //
 // TODO: permissions stuff is weird?
 // TODO: break this into modular JS
