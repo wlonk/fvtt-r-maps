@@ -26,8 +26,8 @@
     ]
   },
   "type": "module",
-  "scripts": [
-      "scripts/r-maps.js"
+  "esmodules": [
+      "src/index.js"
   ],
   "styles": [
       "styles/r-maps.scss"

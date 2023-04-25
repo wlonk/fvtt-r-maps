@@ -10,6 +10,7 @@ update as you move the tokens around.
 
  - [ ] TODO: permissions stuff is weird? Users are having perms errors in the
    console, but it all seems to be working anyway. Not a comforting situation.
+   See https://foundryvtt.wiki/en/development/guides/permissions
  - [ ] TODO: break this into modular JS.
  - [ ] TODO: write unit tests. [Quench](https://github.com/Ethaks/FVTT-Quench)?
  - [ ] These might be handled by Advanced Drawing Tools:
