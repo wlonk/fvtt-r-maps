@@ -82,7 +82,11 @@ Hooks.on('libWrapper.Ready', () => {
     const changed = new Set(keys);
     const positionChange = ["x", "y"].some(c => changed.has(c));
     const shapeChange = ["width", "height"].some(k => changed.has(k));
-    if (positionChange || shapeChange) {
+    // Basically, only the GM has update perms on all the required objects, so
+    // we send the update event to the server, where the GM gets it, and then
+    // the GM updates all the edges. It's a beg-based system, but we get by.
+    const isGM = game.user.isGM;
+    if ((positionChange || shapeChange) && isGM) {
       const { _id } = event;
       RMapEdgeData.updateEdgeDrawingsForToken(_id);
     }
