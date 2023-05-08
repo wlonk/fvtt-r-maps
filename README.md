@@ -13,16 +13,16 @@ update as you move the tokens around.
 ## How-to
 
  1. Install `fvtt-r-maps`
-   - Optionally, `advanced-drawing-tools` and `tokenmagic`.
+    - Optionally, `advanced-drawing-tools` and `tokenmagic`.
  2. Make a scene for your r-map. I like to use a cork-board background.
  3. Add tokens for your actors that you want to connect on the map.
-   - I like to put these tokens in little polaroid-picture frames. It adds to
-     the a e s t h e t i c.
+    - I like to put these tokens in little polaroid-picture frames. It adds to
+      the a e s t h e t i c.
  4. Give the players ownership permissions on any actors that they will need to
     move, or draw lines out from.
-   - For some tables, this may be only their characters. For others, maybe this
-     is everyone having ownership over everyone. Make the right call for your
-     group and play needs!
+    - For some tables, this may be only their characters. For others, maybe
+      this is everyone having ownership over everyone. Make the right call for
+      your group and play needs!
  5. To draw a line, select a token, then click-and-drag from somewhere on the
     *background* to your target. This is a flaw, but I'm still working out how
     to fix it.
@@ -65,12 +65,6 @@ Nice-to-have:
 
 ## Mods to synergize with
 
- - https://foundryvtt.com/packages/move-that-for-you
-    - Enable MT4U on tokens
-    - Then the GM can mark all tokens on the r-map sheet as moveable
-    - But the players should be careful not to draw lines from tokens they
-      don't own, because that'll still fail, and leave the board in an ugly
-      state.
  - https://github.com/dev7355608/advanced-drawing-tools
     - You can add nodes and add Smoothing Factor to get nice arcs, but as soon
       as you move any connected token, the line will snap back to being
@@ -79,3 +73,14 @@ Nice-to-have:
       yarn styling yet.
     - No text-that-follows-line-arc yet.
  - https://github.com/Feu-Secret/Tokenmagic
+    - Just having this enabled on your game will get some reasonable defaults
+      on your edges.
+
+ - https://foundryvtt.com/packages/move-that-for-you
+    - Careful about this one; it is more likely to lead to trouble than just
+      giving players ownership over tokens will.
+    - Enable MT4U on tokens.
+    - Then the GM can mark all tokens on the r-map sheet as moveable.
+    - But the players should be careful not to draw lines from tokens they
+      don't own, because that'll still fail, and leave the board in an ugly
+      state.
