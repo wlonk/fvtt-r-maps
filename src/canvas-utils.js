@@ -95,6 +95,7 @@ export function getEdgeGivenTwoNodes(fromNode, toNode) {
     x: Math.min(fromNode.x, toNode.x),
     y: Math.min(fromNode.y, toNode.y),
     shape: {
+      type: foundry.data.ShapeData.TYPES.POLYGON,
       width: Math.abs(toNode.x - fromNode.x),
       height: Math.abs(toNode.y - fromNode.y),
       points: [
@@ -102,5 +103,9 @@ export function getEdgeGivenTwoNodes(fromNode, toNode) {
         destination.x, destination.y,
       ],
     },
+    // All three must be set, or all three get reset:
+    strokeWidth: 5,
+    strokeAlpha: 1,
+    strokeColor: "#ff0000",
   };
 }

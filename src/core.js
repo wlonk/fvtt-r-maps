@@ -28,6 +28,7 @@ export class RMaps {
   }
 
   // XXX: This should maybe be in our "operations" class?
+  // TODO: insert this into Drawing tools, not Token tools.
   static onGetSceneControlButtons(buttons) {
     const tokenTools = buttons.find((b) => b.name === 'token')?.tools
     tokenTools?.push({
@@ -62,13 +63,6 @@ export class RMapEdgeData {
     /*
      * edgeData: {
      *   'to': TokenID,
-     *   'label': Text,
-     *   'style': {
-     *     // 'color': Color,
-     *     // 'fromEnd': 'flat',
-     *     // 'toEnd': 'flat',
-     *     // eventually more here
-     *   }
      * }
      */
     const newEdge = {
@@ -140,6 +134,9 @@ export class RMapEdgeData {
       };
     });
     log('updateEdgeDrawingsForToken with', inbound, outbound);
+    // TODO: this is failing for some tokens. I think the pattern is "non-PC
+    // actors" and that may be because they're not getting their data stored
+    // right?
     const updates = await canvas.scene.updateEmbeddedDocuments('Drawing', [...inbound, ...outbound])
     return updates;
   }
@@ -152,10 +149,52 @@ export class RMapEdgeData {
     const toNode = canvas?.scene.tokens.get(relevantEdge.to)._object.center;
 
     const edge = getEdgeGivenTwoNodes(fromNode, toNode);
-    edge.shape.type = foundry.data.ShapeData.TYPES.POLYGON;
 
     log('drawEdge with', edge);
     const [ drawing ] = await canvas.scene.createEmbeddedDocuments('Drawing', [edge]);
+
+    // If we have Tokenmagic set up, apply some default filters:
+    if (game.modules.get('tokenmagic')) {
+      let params = [
+        {
+          filterType: "liquid",
+          filterId: "yarnMantle",
+          time: 0,
+          blend: 5,
+          spectral: false,
+          scale: 7,
+          animated: {
+            time: {
+              active: true,
+              speed: 0.0000000015,
+              animType: "move",
+            },
+            scale: {
+              active: true,
+              animType: "cosOscillation",
+              loopDuration: 300,
+              loops: 1,
+              val1: 10,
+              val2: 0.5,
+            },
+          },
+        },
+        {
+          filterType: "shadow",
+          filterId: "yarnShadow",
+          rotation: 35,
+          blur: 2,
+          quality: 5,
+          distance: 10,
+          alpha: 0.7,
+          padding: 10,
+          shadowOnly: false,
+          color: 0x000000,
+          zOrder: 6000,
+        },
+      ];
+      await TokenMagic.addFilters(drawing.object, params);
+    }
     this.updateEdge(edgeId, { drawingId: drawing._id });
     return drawing;
   }
