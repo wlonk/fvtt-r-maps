@@ -28,6 +28,7 @@ export class RMaps {
   }
 
   // XXX: This should maybe be in our "operations" class?
+  // TODO: insert this into Drawing tools, not Token tools.
   static onGetSceneControlButtons(buttons) {
     const tokenTools = buttons.find((b) => b.name === 'token')?.tools
     tokenTools?.push({
@@ -133,6 +134,9 @@ export class RMapEdgeData {
       };
     });
     log('updateEdgeDrawingsForToken with', inbound, outbound);
+    // TODO: this is failing for some tokens. I think the pattern is "non-PC
+    // actors" and that may be because they're not getting their data stored
+    // right?
     const updates = await canvas.scene.updateEmbeddedDocuments('Drawing', [...inbound, ...outbound])
     return updates;
   }
