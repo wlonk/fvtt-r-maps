@@ -1,8 +1,8 @@
 # FVTT R-Maps
 
-![Foundry Core Compatible Version](https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2F[YOUR_USERNAME]%2F[YOUR_REPO]%2Fmain%2Fsrc%2Fmodule.json&label=Foundry%20Version&query=$.compatibleCoreVersion&colorB=orange)
-![Repository License](https://img.shields.io/github/license/[YOUR_USERNAME]/[YOUR_REPO])
-[![Forge Installs](https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2F[YOUR_PACKAGE_NAME]&colorB=4aa94a)](https://forge-vtt.com/bazaar#package=[YOUR_PACKAGE_NAME])
+![Foundry Core Compatible Version](https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2Fwlonk%2Ffvtt-r-maps%2Fmain%2Fsrc%2Fmodule.json&label=Foundry%20Version&query=$.compatibleCoreVersion&colorB=orange)
+![Repository License](https://img.shields.io/github/license/wlonk/fvtt-r-maps)
+[![Forge Installs](https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Ffvtt-r-maps&colorB=4aa94a)](https://forge-vtt.com/bazaar#package=fvtt-r-maps)
 
 This is a tool to help you make r-maps, a.k.a. relationship maps, Anacapa
 charts, conspiracy maps, in your Foundry VTT game.
