@@ -22,12 +22,28 @@ Hooks.on('libWrapper.Ready', () => {
   // Reset all the wrappers for this module:
   libWrapper.unregister_all(RMaps.ID);
 
+
+  /* * /
+  libWrapper.register(RMaps.ID, 'Token.prototype._onDragLeftStart', function (wrapped, ...args) {
+    // This does two things:
+    // 1. It sets the canvas.mouseInteractionManager.state to 'drag'
+    // 2. It drags the token around.
+    // I want 1 without 2.
+    wrapped(...args);
+    if (game.activeTool === RMaps.FLAGS.EDGE_TOOL) {
+      RMaps.state.originToken = this;
+      const pixiLine = RMaps.state.pixiLine = new Line(originToken.center);
+      const spot = this.center;
+      pixiLine.update(spot);
+    }
+  }, 'WRAPPER');
+  /* */
+
   // TODO: this currently won't fire if you start inside a token?
   // This implies a strange but usable UI: select a token, then click and drag
   // somewhere on the background, then drag to your token of destination, then
   // release.
   libWrapper.register(RMaps.ID, 'TokenLayer.prototype._onDragLeftStart', (wrapped, event) => {
-    wrapped(event);
     if (
       game.activeTool === RMaps.FLAGS.EDGE_TOOL
       && canvas.tokens.controlledObjects.size === 1
@@ -38,8 +54,10 @@ Hooks.on('libWrapper.Ready', () => {
       const pixiLine = RMaps.state.pixiLine = new Line(originToken.center);
       const spot = xyFromEvent(event);
       pixiLine.update(spot);
+    } else {
+      wrapped(event);
     }
-  }, 'WRAPPER');
+  }, 'MIXED');
 
   libWrapper.register(RMaps.ID, 'TokenLayer.prototype._onDragLeftMove', (wrapped, event) => {
     wrapped(event);
@@ -54,6 +72,12 @@ Hooks.on('libWrapper.Ready', () => {
   }, 'WRAPPER');
 
   // ...Cancel ? How do you even cancel a Drag-and-Drop?
+  // right-click while dragging, apparently.
+  libWrapper.register(RMaps.ID, 'TokenLayer.prototype._onDragLeftCancel', async (wrapped, event) => {
+    wrapped(event);
+    RMaps.state.pixiLine.clear();
+    RMaps.state.pixiLine = null;
+  }, 'WRAPPER');
 
   libWrapper.register(RMaps.ID, 'TokenLayer.prototype._onDragLeftDrop', async (wrapped, event) => {
     wrapped(event);
@@ -61,18 +85,21 @@ Hooks.on('libWrapper.Ready', () => {
       game.activeTool === RMaps.FLAGS.EDGE_TOOL
       && canvas.tokens.controlledObjects.size === 1
     ) {
-      // Find if we picked a token:
-      const spot = xyFromEvent(event);
-      const targets = xyInsideTargets(spot);
-      if (targets.length === 1) {
-        // We have a winner.
-        const target = targets[0];
-        const edgeId = await RMapEdgeData.createEdge(RMaps.state.originToken.id, { to: target.id });
-        RMapEdgeData.drawEdge(edgeId);
+      try {
+        // Find if we picked a token:
+        const spot = xyFromEvent(event);
+        const targets = xyInsideTargets(spot);
+        if (targets.length === 1) {
+          // We have a winner.
+          const target = targets[0];
+          const edgeId = await RMapEdgeData.createEdge(RMaps.state.originToken.id, { to: target.id });
+          RMapEdgeData.drawEdge(edgeId);
+        }
+      } catch (_) {
+        // Clean up:
+        RMaps.state.pixiLine.clear();
+        RMaps.state.pixiLine = null;
       }
-      // Clean up:
-      RMaps.state.pixiLine.clear();
-      RMaps.state.pixiLine = null;
     }
   }, 'WRAPPER');
 
