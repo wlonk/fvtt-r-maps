@@ -10,6 +10,8 @@ charts, conspiracy maps, in your Foundry VTT game.
 Place tokens, draw lines between them, and have those lines automatically
 update as you move the tokens around.
 
+![A small r-map of five superheroes on a corkboard](docs/r-maps.png)
+
 ## How-to
 
  1. Install `fvtt-r-maps`
