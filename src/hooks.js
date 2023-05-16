@@ -21,28 +21,64 @@ Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
 Hooks.on('libWrapper.Ready', () => {
   // Reset all the wrappers for this module:
   libWrapper.unregister_all(RMaps.ID);
-
-
-  /* * /
+  
+  // Handle drags from Token:
+  libWrapper.register(RMaps.ID, 'Token.prototype._canDrag', function (wrapped, ...args) {
+    return wrapped(...args) || game.activeTool === 'drawEdge';
+  }, 'WRAPPER');
   libWrapper.register(RMaps.ID, 'Token.prototype._onDragLeftStart', function (wrapped, ...args) {
-    // This does two things:
-    // 1. It sets the canvas.mouseInteractionManager.state to 'drag'
-    // 2. It drags the token around.
-    // I want 1 without 2.
-    wrapped(...args);
     if (game.activeTool === RMaps.FLAGS.EDGE_TOOL) {
       RMaps.state.originToken = this;
-      const pixiLine = RMaps.state.pixiLine = new Line(originToken.center);
+      const pixiLine = RMaps.state.pixiLine = new Line(this.center);
       const spot = this.center;
       pixiLine.update(spot);
+    } else {
+      wrapped(...args);
     }
+  }, 'MIXED');
+  libWrapper.register(RMaps.ID, 'Token.prototype._onDragLeftMove', (wrapped, event) => {
+    if (
+      game.activeTool === RMaps.FLAGS.EDGE_TOOL
+      && canvas.tokens.controlledObjects.size === 1
+    ) {
+      const spot = xyFromEvent(event);
+      const pixiLine = RMaps.state.pixiLine;
+      pixiLine.update(spot);
+    } else {
+      wrapped(event);
+    }
+  }, 'MIXED');
+  libWrapper.register(RMaps.ID, 'Token.prototype._onDragLeftCancel', async (wrapped, event) => {
+    wrapped(event);
+    RMaps.state.pixiLine?.clear();
+    RMaps.state.pixiLine = null;
   }, 'WRAPPER');
-  /* */
+  libWrapper.register(RMaps.ID, 'Token.prototype._onDragLeftDrop', async (wrapped, event) => {
+    if (
+      game.activeTool === RMaps.FLAGS.EDGE_TOOL
+      && canvas.tokens.controlledObjects.size === 1
+    ) {
+      try {
+        // Find if we picked a token:
+        const spot = xyFromEvent(event);
+        const targets = xyInsideTargets(spot);
+        if (targets.length === 1) {
+          // We have a winner.
+          const target = targets[0];
+          const edgeId = await RMapEdgeData.createEdge(RMaps.state.originToken.id, { to: target.id });
+          RMapEdgeData.drawEdge(edgeId);
+        }
+      } catch (_) {
+        // Clean up:
+        RMaps.state.pixiLine?.clear();
+        RMaps.state.pixiLine = null;
+      }
+    } else {
+      wrapped(event);
+    }
+  }, 'MIXED');
 
-  // TODO: this currently won't fire if you start inside a token?
-  // This implies a strange but usable UI: select a token, then click and drag
-  // somewhere on the background, then drag to your token of destination, then
-  // release.
+  // Handle drags from the TokenLayer:
   libWrapper.register(RMaps.ID, 'TokenLayer.prototype._onDragLeftStart', (wrapped, event) => {
     if (
       game.activeTool === RMaps.FLAGS.EDGE_TOOL
@@ -58,7 +94,6 @@ Hooks.on('libWrapper.Ready', () => {
       wrapped(event);
     }
   }, 'MIXED');
-
   libWrapper.register(RMaps.ID, 'TokenLayer.prototype._onDragLeftMove', (wrapped, event) => {
     wrapped(event);
     if (
@@ -70,15 +105,11 @@ Hooks.on('libWrapper.Ready', () => {
       pixiLine.update(spot);
     }
   }, 'WRAPPER');
-
-  // ...Cancel ? How do you even cancel a Drag-and-Drop?
-  // right-click while dragging, apparently.
   libWrapper.register(RMaps.ID, 'TokenLayer.prototype._onDragLeftCancel', async (wrapped, event) => {
     wrapped(event);
     RMaps.state.pixiLine.clear();
     RMaps.state.pixiLine = null;
   }, 'WRAPPER');
-
   libWrapper.register(RMaps.ID, 'TokenLayer.prototype._onDragLeftDrop', async (wrapped, event) => {
     wrapped(event);
     if (
@@ -103,6 +134,7 @@ Hooks.on('libWrapper.Ready', () => {
     }
   }, 'WRAPPER');
 
+  // Trigger redrawing edges when a token moves:
   libWrapper.register(RMaps.ID, 'Token.prototype._onUpdate', (wrapped, event, ...args) => {
     wrapped(event, ...args);
     const keys = Object.keys(foundry.utils.flattenObject(event));
@@ -120,6 +152,7 @@ Hooks.on('libWrapper.Ready', () => {
     }
   }, 'WRAPPER');
 
+  // Handle destroying edge data when the linked drawing is deleted:
   libWrapper.register(RMaps.ID, 'Drawing.prototype._onDelete', function (wrapped, event, ...args) {
     Object.keys(RMapEdgeData.allEdges).forEach((edgeKey) => {
       const edge = RMapEdgeData.allEdges[edgeKey];

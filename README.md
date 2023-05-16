@@ -45,6 +45,8 @@ update as you move the tokens around.
  - [ ] write unit tests. [Quench](https://github.com/Ethaks/FVTT-Quench)?
  - [ ] add CI.
  - [ ] add git-tag based CD release process.
+ - [ ] make a demonstration animated gif.
+ - [ ] make a tutorial video.
 
 These might be handled by Advanced Drawing Tools:
 
@@ -64,6 +66,10 @@ Nice-to-have:
  - [ ] Add additional data to edges that let you set up programmatic filters
 
    ("show all edges from this node", "show all edges labeled 'family'", etc.)
+ - [ ] make this all happen on a dedicated RMapLayer, with edge selection and
+   drawing tools on the same submenu.
+ - [ ] package polaroid token frame and corkboard background with the module,
+   pending finding some with proper licensing.
 
 ## Mods to synergize with
 
@@ -74,9 +80,14 @@ Nice-to-have:
     - Since the lines are just _lines_, you can't apply fill to them. So no
       yarn styling yet.
     - No text-that-follows-line-arc yet.
+
  - https://github.com/Feu-Secret/Tokenmagic
     - Just having this enabled on your game will get some reasonable defaults
       on your edges.
+
+ - https://foundryvtt.com/packages/vtta-tokenizer
+     - This is great for making tokens with a frame, such as the polaroid
+       picture frame I used the demos.
 
  - https://foundryvtt.com/packages/move-that-for-you
     - Careful about this one; it is more likely to lead to trouble than just
