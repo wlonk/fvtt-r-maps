@@ -14,24 +14,27 @@ update as you move the tokens around.
 
 ## How-to
 
- 1. Install `fvtt-r-maps`
+ 1. Install and enable `fvtt-r-maps`
     - Optionally, `advanced-drawing-tools` and `tokenmagic`.
- 2. Make a scene for your r-map. I like to use a cork-board background.
+ 2. Make a scene for your r-map.
+    - I like to use a cork-board background.
  3. Add tokens for your actors that you want to connect on the map.
-    - I like to put these tokens in little polaroid-picture frames. It adds to
-      the a e s t h e t i c.
+    - I like to put these tokens in little polaroid-picture frames and rotate
+      them randomly a few degrees left or right. It adds to the _aesthetic_.
  4. Give the players ownership permissions on any actors that they will need to
     move, or draw lines out from.
     - For some tables, this may be only their characters. For others, maybe
       this is everyone having ownership over everyone. Make the right call for
       your group and play needs!
- 5. To draw a line, select a token, then click-and-drag from somewhere on the
-    *background* to your target. This is a flaw, but I'm still working out how
-    to fix it.
- 6. Optionally, once your lines are all set, the GM or any players with drawing
-    permissions can add labels to them, or restyle them, or use
-    `advanced-drawing-tools` to add some intermediate points in them and curve
-    them.
+    - However, I will caution that you are likely to get the most ease-of-use
+      out of making every token owned by every player. Perhaps you then lock
+      things down later if you need, perhaps not, but at the time of drawing
+      lines and moving things around, communism is the watchword!
+ 5. To draw a line, drag from one token you control to any other.
+    - Optionally, once your lines are all set, the GM or any players with
+      drawing permissions can add labels to them, or restyle them, or use
+      `advanced-drawing-tools` to add some intermediate points in them and
+      curve them.
 
 ## TODO
 
