@@ -47,7 +47,7 @@ update as you move the tokens around.
    change to the player's view.
  - [ ] write unit tests. [Quench](https://github.com/Ethaks/FVTT-Quench)?
  - [ ] add CI.
- - [ ] add git-tag based CD release process.
+ - [X] add git-tag based CD release process.
  - [ ] make a demonstration animated gif.
  - [ ] make a tutorial video.
 
