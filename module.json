@@ -8,7 +8,7 @@
       "discord": "wlonk#6479"
     }
   ],
-  "version": "0.1.0",
+  "version": "#{VERSION}#",
   "compatibility": {
     "minimum": "10",
     "verified": "10"
@@ -29,9 +29,9 @@
   "esmodules": [
       "src/index.js"
   ],
-  "url": "https://github.com/wlonk/fvtt-r-maps",
-  "download": "https://github.com/wlonk/fvtt-r-maps",
-  "readme": "https://github.com/wlonk/fvtt-r-maps",
-  "changelog": "https://github.com/wlonk/fvtt-r-maps",
-  "bugs": "https://github.com/wlonk/fvtt-r-maps"
+  "url": "#{URL}#",
+  "manifest": "#{MANIFEST}#",
+  "download": "#{DOWNLOAD}#",
+  "license": "LICENSE",
+  "readme": "README.md"
 }
