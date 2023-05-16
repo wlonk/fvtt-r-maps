@@ -31,7 +31,7 @@ export class Line extends PIXI.Graphics {
     super();
     this.style = {
       width: 5,
-      color: '0xFFFFFF',
+      color: '0xFF0000',
     };
 
     this.origin = { x, y };
