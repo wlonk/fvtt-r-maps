@@ -6,6 +6,7 @@
  * libWrapper is global from libWrapper
  */
 
+import { log } from './debug-log-utils.js';
 import { RMaps, RMapEdgeData } from './core.js';
 import { Line, xyFromEvent, xyInsideTargets } from './canvas-utils.js';
 
@@ -58,6 +59,7 @@ Hooks.on('libWrapper.Ready', () => {
       game.activeTool === RMaps.FLAGS.EDGE_TOOL
       && canvas.tokens.controlledObjects.size === 1
     ) {
+      log('Drop event');
       try {
         // Find if we picked a token:
         const spot = xyFromEvent(event);
@@ -65,6 +67,7 @@ Hooks.on('libWrapper.Ready', () => {
         if (targets.length === 1) {
           // We have a winner.
           const target = targets[0];
+          log(target);
           const edgeId = await RMapEdgeData.createEdge(RMaps.state.originToken.id, { to: target.id });
           RMapEdgeData.drawEdge(edgeId);
         }
@@ -117,12 +120,14 @@ Hooks.on('libWrapper.Ready', () => {
       && canvas.tokens.controlledObjects.size === 1
     ) {
       try {
+        log('Drop event');
         // Find if we picked a token:
         const spot = xyFromEvent(event);
         const targets = xyInsideTargets(spot);
         if (targets.length === 1) {
           // We have a winner.
           const target = targets[0];
+          log(target);
           const edgeId = await RMapEdgeData.createEdge(RMaps.state.originToken.id, { to: target.id });
           RMapEdgeData.drawEdge(edgeId);
         }

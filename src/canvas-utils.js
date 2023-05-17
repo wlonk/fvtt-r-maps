@@ -2,12 +2,15 @@
  * canvas is global from Foundry
  * PIXI
  */
+import { log } from './debug-log-utils.js';
 
 export function xyFromEvent(event) {
-  return {
+  const ret = {
     x: event.data.destination.x,
     y: event.data.destination.y,
   };
+  log('xyFromEvent', ret);
+  return ret;
 }
 
 export function xyInsideTargets({ x, y }) {
