@@ -16,14 +16,13 @@ export function xyFromEvent(event) {
 export function xyInsideTargets({ x, y }) {
   return canvas.tokens.placeables.filter((obj) => {
     if ( !obj.visible ) { return false; }
-    let c = obj.center;
     let ul = {
       x: obj.x,
       y: obj.y,
     };
     let lr = {
-      x: obj.x + obj.width,
-      y: obj.y + obj.height,
+      x: obj.x + obj.hitArea.width,
+      y: obj.y + obj.hitArea.height,
     };
     return Number.between(x, ul.x, lr.x) && Number.between(y, ul.y, lr.y);
   });
