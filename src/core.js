@@ -65,6 +65,7 @@ export class RMapEdgeData {
      *   'to': TokenID,
      * }
      */
+    log('beginning createEdge');
     const newEdge = {
       ...edgeData,
       fromId: tokenId,
@@ -74,6 +75,7 @@ export class RMapEdgeData {
       [newEdge.id]: newEdge
     };
     await canvas?.scene.tokens.get(tokenId)?.setFlag(RMaps.ID, RMaps.FLAGS.EDGES, newEdges);
+    log('created new edge:', newEdge.id);
     return newEdge.id;
   }
 
