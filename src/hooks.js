@@ -138,33 +138,35 @@ Hooks.on('libWrapper.Ready', () => {
       }
     }
   }, 'WRAPPER');
+});
 
-  // Trigger redrawing edges when a token moves:
-  libWrapper.register(RMaps.ID, 'Token.prototype._onUpdate', (wrapped, event, ...args) => {
-    wrapped(event, ...args);
-    const keys = Object.keys(foundry.utils.flattenObject(event));
-    const changed = new Set(keys);
-    const positionChange = ["x", "y"].some(c => changed.has(c));
-    const shapeChange = ["width", "height"].some(k => changed.has(k));
-    // Basically, only the GM has update perms on all the required Drawing
-    // objects, so we send the update event to the server, where the GM gets
-    // it, and then the GM updates all the edges. It's a beg-based system, but
-    // we get by.
-    const isGM = game.user.isGM;
-    if ((positionChange || shapeChange) && isGM) {
-      const { _id } = event;
-      RMapEdgeData.updateEdgeDrawingsForToken(_id);
+// Trigger redrawing edges when a token moves:
+Hooks.on('updateToken', (token, change) => {
+  const keys = Object.keys(change);
+  const changed = new Set(keys);
+  const positionChange = ["x", "y"].some(c => changed.has(c));
+  const shapeChange = ["width", "height"].some(k => changed.has(k));
+  // Basically, only the GM has update perms on all the required Drawing
+  // objects, so we send the update event to the server, where the GM gets
+  // it, and then the GM updates all the edges. It's a beg-based system, but
+  // we get by.
+  const isGM = game.user.isGM;
+  if ((positionChange || shapeChange) && isGM) {
+    const { id } = token;
+    RMapEdgeData.updateEdgeDrawingsForToken(id);
+  }
+});
+
+Hooks.on('preDeleteToken', async (token) => {
+  await RMapEdgeData.deleteAllEdgesToAndFrom(token.id);
+});
+
+// Handle destroying edge data when the linked drawing is deleted:
+Hooks.on('preDeleteDrawing', async (drawing) => {
+  await Promise.all(Object.keys(RMapEdgeData.allEdges).map((edgeKey) => {
+    const edge = RMapEdgeData.allEdges[edgeKey];
+    if (edge.drawingId === drawing.id) {
+      return RMapEdgeData.deleteEdge(edgeKey);
     }
-  }, 'WRAPPER');
-
-  // Handle destroying edge data when the linked drawing is deleted:
-  libWrapper.register(RMaps.ID, 'Drawing.prototype._onDelete', function (wrapped, event, ...args) {
-    Object.keys(RMapEdgeData.allEdges).forEach((edgeKey) => {
-      const edge = RMapEdgeData.allEdges[edgeKey];
-      if (edge.drawingId === this.id) {
-        RMapEdgeData.deleteEdge(edgeKey);
-      }
-    });
-    wrapped(event, ...args);
-  }, 'WRAPPER');
+  }));
 });
