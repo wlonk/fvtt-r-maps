@@ -100,6 +100,30 @@ export class RMapEdgeData {
       .get(relevantEdge.fromId)?.setFlag(RMaps.ID, RMaps.FLAGS.EDGES, keyDeletion);
   }
 
+  static deleteAllEdgesToAndFrom(tokenId) {
+    // Inbound edges:
+    const inbound = Object.values(this.allEdges).filter(
+      (edge) => edge.to === tokenId
+    ).map((edge) => {
+      const { drawingId } = edge;
+      const drawing = canvas.scene.drawings.get(drawingId);
+      // This will trigger cleaning up the edge data, too, because of the
+      // Drawing.onDelete hook!
+      return drawing.delete();
+    });
+    // Outbound edges:
+    const outbound = Object.values(this.allEdges).filter(
+      (edge) => edge.fromId === tokenId
+    ).map((edge) => {
+      const { drawingId } = edge;
+      const drawing = canvas.scene.drawings.get(drawingId);
+      this.deleteEdge(edge.id);
+      return drawing.delete();
+    });
+    log('Finished deleting all inbound and outbound edges');
+    return Promise.all([...outbound, ...inbound]);
+  }
+
   // This pertains to Drawings:
   static async updateEdgeDrawingsForToken(tokenId) {
     log('beginning updateEdgeDrawingsForToken');
@@ -110,8 +134,8 @@ export class RMapEdgeData {
       const { drawingId } = edge;
       const drawing = canvas.scene.drawings.get(drawingId);
 
-      const fromNode = canvas.scene.tokens.get(edge.fromId).object.center;
-      const toNode = canvas.scene.tokens.get(edge.to).object.center;
+      const fromNode = canvas.scene.tokens.get(edge.fromId)?.object.center;
+      const toNode = canvas.scene.tokens.get(edge.to)?.object.center;
 
       const newEdge = getEdgeGivenTwoNodes(fromNode, toNode);
       return {
@@ -126,8 +150,8 @@ export class RMapEdgeData {
       const { drawingId } = edge;
       const drawing = canvas.scene.drawings.get(drawingId);
 
-      const fromNode = canvas.scene.tokens.get(tokenId).object.center;
-      const toNode = canvas.scene.tokens.get(edge.to).object.center;
+      const fromNode = canvas.scene.tokens.get(tokenId)?.object.center;
+      const toNode = canvas.scene.tokens.get(edge.to)?.object.center;
 
       const newEdge = getEdgeGivenTwoNodes(fromNode, toNode);
       return {
