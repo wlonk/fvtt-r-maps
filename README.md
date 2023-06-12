@@ -36,6 +36,10 @@ update as you move the tokens around.
       `advanced-drawing-tools` to add some intermediate points in them and
       curve them.
 
+## About R-Maps
+
+ - [Paul's R-Map Method](https://www.indiegamereadingclub.com/indie-game-reading-club/pauls-r-map-method/)
+
 ## TODO
 
  - [X] permissions stuff is weird? Users are having perms errors in the
