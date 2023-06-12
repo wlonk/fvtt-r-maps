@@ -156,7 +156,7 @@ export class RMapEdgeData {
     const [ drawing ] = await canvas.scene.createEmbeddedDocuments('Drawing', [edge]);
 
     // If we have Tokenmagic set up, apply some default filters:
-    if (game.modules.get('tokenmagic')) {
+    if (game.modules.get('tokenmagic')?.active) {
       let params = [
         {
           filterType: "liquid",
